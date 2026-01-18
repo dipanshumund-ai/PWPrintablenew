@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contact – PWPrintable</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{background:#f5f7fb;font-family:Inter,system-ui,sans-serif;transition:.25s;padding:20px;}
+.dark-mode{background:#0f172a!important;color:#e2e8f0!important;}
+.card{background:#fff;padding:20px;border-radius:18px;}
+.dark-mode .card{background:#1e293b!important;}
+input,textarea{width:100%;border:1px solid #cbd5e1;padding:12px;border-radius:12px;margin-bottom:15px;}
+.dark-mode input,.dark-mode textarea{background:#0f172a;border-color:#334155;color:#fff;}
+button{background:#2563eb;color:#fff;padding:12px;width:100%;border-radius:12px;}
+button:hover{opacity:.9;}
+a{color:#2563eb;} .dark-mode a{color:#60a5fa;}
+</style>
+
+</head>
+
+<body>
+
+<h1 class="text-3xl font-bold mb-4">Contact Us</h1>
+
+<div class="card">
+
+<p class="mb-4">Have questions, feedback, or suggestions?</p>
+
+<p class="mb-4">You can reach us anytime at:</p>
+
+<p class="text-xl font-semibold mb-4">📧 <b>dipanshumund@gmail.com</b></p>
+
+<p class="text-sm text-gray-600 dark:text-gray-300">
+(Responses typically within 24 hours)
+</p>
+
+</div>
+
+<p class="mt-8"><a href="index.html">← Back to Home</a></p>
+
+<script>
+if(localStorage.getItem("DM")==="1")document.body.classList.add("dark-mode");
+</script>
+
+</body></html>

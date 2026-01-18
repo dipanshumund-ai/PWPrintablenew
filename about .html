@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About – PWPrintable</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<style>
+body{background:#f5f7fb;font-family:Inter,system-ui,sans-serif;transition:.25s;padding:20px;}
+.dark-mode{background:#0f172a!important;color:#e2e8f0!important;}
+.card{background:#fff;padding:20px;border-radius:18px;}
+.dark-mode .card{background:#1e293b!important;}
+a{color:#2563eb;} .dark-mode a{color:#60a5fa;}
+</style></head>
+
+<body>
+
+<h1 class="text-3xl font-bold mb-4">About PWPrintable</h1>
+
+<div class="card">
+<p class="mb-4">
+PWPrintable is a fast, private, and free tool created to help students & professionals convert dark PDFs into clean, printer-friendly versions.
+</p>
+
+<h2 class="font-semibold text-xl mb-2">Why This Tool?</h2>
+<ul class="list-disc ml-6 mb-4">
+<li>Dark study materials waste a lot of ink</li>
+<li>Most PDF tools upload files to a server</li>
+<li>PWPrintable does **everything offline**</li>
+</ul>
+
+<h2 class="font-semibold text-xl mb-2">Core Features</h2>
+<ul class="list-disc ml-6 mb-4">
+<li>PDF color inversion</li>
+<li>Orientation fixing</li>
+<li>Watermark removal</li>
+<li>Text sharpening</li>
+<li>Local-only processing</li>
+<li>Fast and ad-supported (free forever)</li>
+</ul>
+
+<p class="mb-4">Created by <b>Dipanshu Mund</b> with ❤️ to help students.</p>
+</div>
+
+<p class="mt-8"><a href="index.html">← Back to Home</a></p>
+
+<script>
+if(localStorage.getItem("DM")==="1")document.body.classList.add("dark-mode");
+</script>
+
+</body></html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PWPrintable – PDF Inverter</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<style>
+body{background:#f5f7fb;font-family:Inter,system-ui,sans-serif;transition:.25s;}
+.dark-mode{background:#0f172a!important;color:#e2e8f0!important;}
+.dark-mode h1,.dark-mode h2{color:#ffffff!important;}
+.dark-mode p,.dark-mode span{color:#e2e8f0!important;}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:20px;}
+.dark-mode .card{background:#1e293b!important;border-color:#334155!important;}
+.upload-zone{border:2px dashed #cbd5e1;padding:40px 10px;border-radius:20px;text-align:center;cursor:pointer;transition:.2s;}
+.upload-zone:hover{border-color:#3b82f6;background:#eff6ff;}
+.dark-mode .upload-zone:hover{background:#1e293b;}
+#previewContainer{display:none;}
+#progressContainer{display:none;height:12px;background:#e5e7eb;border-radius:10px;}
+#progressBar{height:100%;width:0%;background:#3b82f6;border-radius:10px;transition:.25s;}
+a{color:#2563eb;} .dark-mode a{color:#60a5fa;}
+</style>
+</head>
+
+<body class="p-4">
+
+<!-- HEADER -->
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-blue-600 text-white p-2 rounded-lg material-icons-round">print</div>
+<h1 class="text-3xl font-extrabold text-blue-700 dark:text-white">PWPrintable</h1>
+</div>
+
+<!-- DARK MODE BUTTON -->
+<div class="flex justify-end mb-5">
+<button id="toggleDark" class="px-4 py-2 bg-blue-600 text-white rounded-xl flex items-center gap-2">
+<span class="material-icons-round">dark_mode</span> Dark Mode
+</button>
+</div>
+
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Invert PDF for Easy Printing</h1>
+<p class="text-gray-600 dark:text-gray-300 mb-6">Save ink. Convert dark PDFs to printer-friendly versions.</p>
+
+<div class="card text-center text-gray-500 dark:text-gray-300 mb-6">AdSense Area</div>
+
+<!-- MAIN TOOL -->
+<div class="card mb-6">
+
+<p class="flex items-center gap-3 text-gray-700 dark:text-gray-200 mb-4">
+<span class="material-icons-round text-blue-500">lock</span>Private |
+<span class="material-icons-round text-blue-500">picture_as_pdf</span>Max 100MB |
+<span class="material-icons-round text-blue-500">bolt</span>Free
+</p>
+
+<!-- UPLOAD -->
+<div id="dropZone" class="upload-zone mb-4">
+<span class="material-icons-round text-blue-600 text-5xl mb-2">cloud_upload</span>
+<p id="uploadText" class="text-gray-600 dark:text-gray-300">Click or drag PDF here</p>
+</div>
+
+<input type="file" id="pdfInput" accept="application/pdf" class="hidden">
+
+<!-- PREVIEW -->
+<div id="previewContainer" class="text-center mb-4">
+<img id="thumbnail" class="mx-auto w-48 rounded-xl shadow mb-3">
+<p id="fileInfo" class="text-gray-700 dark:text-gray-200"></p>
+</div>
+
+<button id="removePDF" class="hidden w-full bg-red-600 text-white py-2 rounded-xl mb-3">Remove PDF</button>
+
+<!-- TOGGLES -->
+<div class="grid grid-cols-2 gap-3 mt-4 mb-4">
+<button id="fixOrientation" class="py-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-white">Fix Orientation</button>
+<button id="removeWatermark" class="py-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-white">Remove Watermark</button>
+<button id="sharpenText" class="col-span-2 py-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-white">Sharpen Text</button>
+</div>
+
+<!-- ACTION BUTTONS -->
+<button id="invertBtn" disabled class="w-full bg-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-400 py-3 rounded-xl">Invert PDF</button>
+<button id="downloadBtn" class="hidden w-full bg-green-600 text-white py-3 rounded-xl mt-4">Download Inverted PDF</button>
+<button id="shareBtn" class="hidden w-full bg-blue-700 text-white py-3 rounded-xl mt-3">Share PDF</button>
+
+<div id="progressContainer" class="mt-4"><div id="progressBar"></div></div>
+<p id="status" class="text-center mt-3 text-gray-700 dark:text-gray-200"></p>
+<p id="extraStats" class="text-center text-sm text-gray-600 dark:text-gray-300"></p>
+
+</div>
+
+<!-- FEATURE CARDS -->
+<div class="space-y-4 mb-10">
+<div class="card"><div class="flex items-center gap-4 mb-2">
+<span class="material-icons-round bg-blue-50 text-blue-600 p-3 rounded-xl dark:bg-blue-900 dark:text-blue-300">security</span>
+<h2 class="font-semibold text-gray-900 dark:text-white text-lg">Privacy First</h2>
+</div><p class="text-gray-600 dark:text-gray-300">Your PDF never leaves your device.</p></div>
+
+<div class="card"><div class="flex items-center gap-4 mb-2">
+<span class="material-icons-round bg-blue-50 text-blue-600 p-3 rounded-xl dark:bg-blue-900 dark:text-blue-300">invert_colors</span>
+<h2 class="font-semibold text-gray-900 dark:text-white text-lg">Save Ink</h2>
+</div><p class="text-gray-600 dark:text-gray-300">Makes dark PDFs printer-friendly.</p></div>
+
+<div class="card"><div class="flex items-center gap-4 mb-2">
+<span class="material-icons-round bg-blue-50 text-blue-600 p-3 rounded-xl dark:bg-blue-900 dark:text-blue-300">speed</span>
+<h2 class="font-semibold text-gray-900 dark:text-white text-lg">Fast Processing</h2>
+</div><p class="text-gray-600 dark:text-gray-300">Instant conversion on your device.</p></div>
+</div>
+
+<!-- FOOTER -->
+<p class="text-center mt-10 text-gray-700 dark:text-gray-300">
+<a href="privacy.html">Privacy Policy</a> |
+<a href="about.html">About</a> |
+<a href="contact.html">Contact</a> |
+<a href="terms.html">Terms</a>
+</p>
+
+<p class="text-center text-gray-600 dark:text-gray-300 mb-10">Made by <b>Dipanshu Mund</b></p>
+
+<!-- LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// DARK MODE FIX
+const body=document.body;
+const darkBtn=document.getElementById("toggleDark");
+
+function applyMode(){
+ if(body.classList.contains("dark-mode")){
+  darkBtn.innerHTML='<span class="material-icons-round">light_mode</span> Light Mode';
+ }else{
+  darkBtn.innerHTML='<span class="material-icons-round">dark_mode</span> Dark Mode';
+ }
+}
+
+if(localStorage.getItem("DM")==="1")body.classList.add("dark-mode");
+applyMode();
+
+darkBtn.onclick=()=>{
+ body.classList.toggle("dark-mode");
+ localStorage.setItem("DM",body.classList.contains("dark-mode")?"1":"0");
+ applyMode();
+};
+
+// GLOBAL
+let selectedPDF=null,finalPDFBlob=null;
+let fixOrientationFlag=false,watermarkFlag=false,sharpenFlag=false;
+
+// TOGGLES
+fixOrientation.onclick=()=>fixOrientationFlag=!fixOrientationFlag;
+removeWatermark.onclick=()=>watermarkFlag=!watermarkFlag;
+sharpenText.onclick=()=>sharpenFlag=!sharpenFlag;
+
+// UPLOAD
+dropZone.onclick=()=>pdfInput.click();
+dropZone.ondragover=e=>e.preventDefault();
+dropZone.ondrop=e=>{e.preventDefault();loadPDF(e.dataTransfer.files[0]);};
+pdfInput.onchange=e=>loadPDF(e.target.files[0]);
+
+async function loadPDF(file){
+if(!file)return;
+selectedPDF=file;
+uploadText.innerText=file.name;
+let reader=new FileReader();reader.readAsArrayBuffer(file);
+reader.onload=async()=>{
+ let pdf=await pdfjsLib.getDocument({data:new Uint8Array(reader.result)}).promise;
+ let page=await pdf.getPage(1);
+ let vp=page.getViewport({scale:.4});
+ let c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;
+ await page.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
+ thumbnail.src=c.toDataURL("image/jpeg",.8);
+ fileInfo.innerHTML=`<b>${file.name}</b><br>${pdf.numPages} pages • ${(file.size/1048576).toFixed(2)} MB`;
+ previewContainer.style.display="block";
+ removePDF.style.display="block";
+ invertBtn.disabled=false;
+ invertBtn.classList.remove("bg-gray-300");
+ invertBtn.classList.add("bg-blue-600","text-white");
+};
+}
+
+// REMOVE PDF
+removePDF.onclick=()=>{
+selectedPDF=null;
+previewContainer.style.display="none";
+removePDF.style.display="none";
+uploadText.innerText="Click or drag PDF here";
+invertBtn.disabled=true;
+invertBtn.classList.add("bg-gray-300","text-gray-600");
+};
+
+// PROCESS PDF
+invertBtn.onclick=async()=>{
+if(!selectedPDF)return;
+status.innerText="Processing...";
+progressContainer.style.display="block";
+progressBar.style.width="0%";
+
+let reader=new FileReader();reader.readAsArrayBuffer(selectedPDF);
+reader.onload=async()=>{
+ let start=performance.now();
+ let {jsPDF}=window.jspdf;
+ let pdf=await pdfjsLib.getDocument({data:new Uint8Array(reader.result)}).promise;
+ let out=null;
+
+ for(let i=1;i<=pdf.numPages;i++){
+  progressBar.style.width=(i/pdf.numPages*100)+"%";
+  let page=await pdf.getPage(i);
+  let vp=page.getViewport({scale:1.7});
+  let c=document.createElement("canvas");
+  c.width=vp.width;c.height=vp.height;
+  let ctx=c.getContext("2d");
+  await page.render({canvasContext:ctx,viewport:vp}).promise;
+
+  let img=ctx.getImageData(0,0,c.width,c.height);
+  let d=img.data;
+  for(let j=0;j<d.length;j+=4){
+   d[j]=255-d[j];d[j+1]=255-d[j+1];d[j+2]=255-d[j+2];
+   if(sharpenFlag)d[j]=Math.min(255,d[j]*1.07);
+   if(watermarkFlag && d[j]>240 && d[j+1]>240 && d[j+2]>240)d[j]=d[j+1]=d[j+2]=255;
+  }
+  ctx.putImageData(img,0,0);
+
+  let w=page.view[2]*.264583;
+  let h=page.view[3]*.264583;
+  let jpg=c.toDataURL("image/jpeg",.55);
+
+  if(i==1)out=new jsPDF({orientation:w>h?"landscape":"portrait",unit:"mm",format:[w,h]});
+  else out.addPage([w,h],w>h?"landscape":"portrait");
+
+  out.addImage(jpg,"JPEG",0,0,w,h);
+ }
+
+ finalPDFBlob=out.output("blob");
+ status.innerText="✔ PDF Ready!";
+ extraStats.innerText=`Time: ${((performance.now()-start)/1000).toFixed(1)}s • Size: ${(finalPDFBlob.size/1048576).toFixed(2)} MB`;
+ downloadBtn.style.display="block";
+ shareBtn.style.display="block";
+};
+};
+
+// DOWNLOAD
+downloadBtn.onclick=()=>{
+let url=URL.createObjectURL(finalPDFBlob);
+let a=document.createElement("a");
+a.href=url;
+a.download=selectedPDF.name.replace(".pdf","_inverted.pdf");
+a.click();
+};
+
+// SHARE
+shareBtn.onclick=()=>{
+if(!navigator.share)return alert("Sharing not supported");
+navigator.share({
+ title:"PWPrintable PDF",
+ text:"Converted using PWPrintable",
+ files:[new File([finalPDFBlob],selectedPDF.name.replace(".pdf","_inverted.pdf"),{type:"application/pdf"})]
+});
+};
+</script>
+
+</body>
+</html>
