@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Merge PDF Files – PWPrintable</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+body { background:#f5f7fb; font-family:Inter,sans-serif; }
+.dark-mode { background:#0f172a!important; color:#e2e8f0!important; }
+.card { background:white; padding:20px; border-radius:18px; }
+.dark-mode .card { background:#1e293b!important; }
+.upload-zone {
+  border:2px dashed #cbd5e1; padding:35px; border-radius:18px;
+  text-align:center; cursor:pointer; transition:.25s;
+}
+.upload-zone:hover { border-color:#3b82f6; background:#eef6ff; }
+.file-item { background:#e5e7eb; padding:10px; border-radius:10px; margin-bottom:8px; }
+.dark-mode .file-item { background:#334155; }
+#downloadBtn { display:none; }
+</style>
+</head>
+
+<body class="p-4">
+
+<h1 class="text-3xl font-bold mb-2 text-blue-700 dark:text-white">Merge PDF Files</h1>
+<p class="text-gray-600 dark:text-gray-300 mb-4">Combine multiple PDF files into one clean document.</p>
+
+<!-- ⭐ AD 1 — Auto Relaxed -->
+<div class="mb-6 card text-center">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7066655022690902"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-7066655022690902"
+     data-ad-slot="9312619825"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="card">
+
+<!-- Upload Zone -->
+<div id="dropZone" class="upload-zone mb-4">
+  <p class="text-lg mb-2">📄 Drag & Drop PDFs here</p>
+  <p class="text-sm text-gray-500">or tap to select</p>
+</div>
+
+<input id="pdfFiles" type="file" accept="application/pdf" multiple class="hidden">
+
+<!-- File List -->
+<div id="fileList"></div>
+
+<!-- ⭐ AD 2 — Fluid Layout -->
+<div class="my-4">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7066655022690902"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="fluid"
+     data-ad-layout-key="-fb+5w+4e-db+86"
+     data-ad-client="ca-pub-7066655022690902"
+     data-ad-slot="5155535358"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<!-- Merge Button -->
+<button id="mergeBtn" disabled class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl opacity-50">
+Merge PDFs
+</button>
+
+<!-- Download Button -->
+<button id="downloadBtn" class="w-full bg-green-600 text-white py-3 mt-4 rounded-xl">
+Download Merged PDF
+</button>
+
+<p id="status" class="text-center mt-4 font-semibold"></p>
+
+</div>
+
+<script>
+// DARK MODE SUPPORT
+if (localStorage.getItem("DM")==="1") {
+  document.body.classList.add("dark-mode");
+}
+
+// Variables
+const pdfInput = document.getElementById("pdfFiles");
+const dropZone = document.getElementById("dropZone");
+const fileList = document.getElementById("fileList");
+const mergeBtn = document.getElementById("mergeBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+let selectedFiles = [];
+let mergedBlob = null;
+
+// CLICK PICKER
+dropZone.onclick = () => pdfInput.click();
+
+// DRAG OVER
+dropZone.ondragover = e => {
+  e.preventDefault();
+  dropZone.style.borderColor = "#2563eb";
+};
+
+// DROP FILES
+dropZone.ondrop = e => {
+  e.preventDefault();
+  handleFiles(e.dataTransfer.files);
+};
+
+// FILE SELECTED
+pdfInput.onchange = e => handleFiles(e.target.files);
+
+// HANDLE MULTIPLE PDFs
+function handleFiles(files) {
+  for (let file of files) {
+    if (file.type === "application/pdf") {
+      selectedFiles.push(file);
+    }
+  }
+  renderFileList();
+}
+
+// RENDER FILE LIST
+function renderFileList() {
+  fileList.innerHTML = "";
+
+  selectedFiles.forEach((file, index) => {
+    let item = document.createElement("div");
+    item.className = "file-item";
+    item.innerHTML = `${index+1}. ${file.name}`;
+    fileList.appendChild(item);
+  });
+
+  mergeBtn.disabled = selectedFiles.length < 2;
+  mergeBtn.style.opacity = selectedFiles.length < 2 ? "0.5" : "1";
+}
+
+// MERGE PDFs
+mergeBtn.onclick = async () => {
+  if (selectedFiles.length < 2) return;
+
+  document.getElementById("status").innerText = "Merging... please wait.";
+  downloadBtn.style.display = "none";
+
+  const mergedPdf = await PDFLib.PDFDocument.create();
+
+  for (let file of selectedFiles) {
+    const bytes = await file.arrayBuffer();
+    const pdf = await PDFLib.PDFDocument.load(bytes);
+
+    const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    pages.forEach(p => mergedPdf.addPage(p));
+  }
+
+  const mergedBytes = await mergedPdf.save();
+  mergedBlob = new Blob([mergedBytes], { type: "application/pdf" });
+
+  document.getElementById("status").innerText = "PDF Ready!";
+
+  downloadBtn.style.display = "block";
+};
+
+// MANUAL DOWNLOAD
+downloadBtn.onclick = () => {
+  if (!mergedBlob) return;
+
+  const url = URL.createObjectURL(mergedBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "merged.pdf";
+  a.click();
+};
+</script>
+
+</body>
+</html>
